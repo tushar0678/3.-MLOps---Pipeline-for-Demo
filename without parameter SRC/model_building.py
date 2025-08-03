@@ -43,34 +43,6 @@ logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
 
-def load_params(params_path: str) -> dict:
-    """
-    Load model parameters from a YAML config file.
-
-    Args:
-        params_path (str): Path to the YAML file.
-
-    Returns:
-        dict: Dictionary containing model hyperparameters.
-
-    Raises:
-        FileNotFoundError, yaml.YAMLError, Exception: If file is missing or invalid.
-    """
-    try:
-        with open(params_path, 'r') as file:
-            params = yaml.safe_load(file)
-        logger.debug('Parameters retrieved from %s', params_path)
-        return params
-    except FileNotFoundError:
-        logger.error('File not found: %s', params_path)
-        raise
-    except yaml.YAMLError as e:
-        logger.error('YAML error: %s', e)
-        raise
-    except Exception as e:
-        logger.error('Unexpected error: %s', e)
-        raise
-
 
 def load_data(file_path: str) -> pd.DataFrame:
     """
@@ -121,12 +93,10 @@ def train_model(X_train: np.ndarray, y_train: np.ndarray, params: dict) -> Rando
             raise ValueError("Mismatch: X_train rows != y_train length.")
 
         # Initialize classifier with hyperparameters
-        clf = RandomForestClassifier(
-            n_estimators=params.get('n_estimators', 100),
-            random_state=params.get('random_state', 42)
-        )
+        clf = RandomForestClassifier(n_estimators=params['n_estimators'], random_state=params['random_state'])
 
-        logger.debug('Model initialized with params: %s', params)
+
+        logger.debug('Model initialized with %d samples', X_train.shape[0])
         clf.fit(X_train, y_train)  # Train the model
         logger.debug('Model training completed')
 
@@ -174,8 +144,7 @@ def main():
     - Saves trained model to disk
     """
     try:
-        # Load model config
-        params = load_params('params.yaml')['model_building']
+        params = {'n_estimators':25, 'random_state' : 2}
 
         # Load processed training data
         train_data = load_data('./data/processed/train_tfidf.csv')

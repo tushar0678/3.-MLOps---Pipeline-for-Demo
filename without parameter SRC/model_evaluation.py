@@ -19,7 +19,7 @@ import json
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score
 import logging
 import yaml
-# from dvclive import Live
+#from dvclive import Live
 
 # ----------------------------
 # Logging Configuration Setup
@@ -46,30 +46,30 @@ logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
 
-def load_params(params_path: str) -> dict:
-    """
-    Load parameters from a YAML file.
+# def load_params(params_path: str) -> dict:
+#     """
+#     Load parameters from a YAML file.
 
-    Args:
-        params_path (str): Path to YAML config file.
+#     Args:
+#         params_path (str): Path to YAML config file.
 
-    Returns:
-        dict: Parameters dictionary.
-    """
-    try:
-        with open(params_path, 'r') as file:
-            params = yaml.safe_load(file)
-        logger.debug('Parameters retrieved from %s', params_path)
-        return params
-    except FileNotFoundError:
-        logger.error('File not found: %s', params_path)
-        raise
-    except yaml.YAMLError as e:
-        logger.error('YAML error: %s', e)
-        raise
-    except Exception as e:
-        logger.error('Unexpected error: %s', e)
-        raise
+#     Returns:
+#         dict: Parameters dictionary.
+#     """
+#     try:
+#         with open(params_path, 'r') as file:
+#             params = yaml.safe_load(file)
+#         logger.debug('Parameters retrieved from %s', params_path)
+#         return params
+#     except FileNotFoundError:
+#         logger.error('File not found: %s', params_path)
+#         raise
+#     except yaml.YAMLError as e:
+#         logger.error('YAML error: %s', e)
+#         raise
+#     except Exception as e:
+#         logger.error('Unexpected error: %s', e)
+#         raise
 
 
 def load_model(file_path: str):
@@ -182,7 +182,7 @@ def main():
     """
     try:
         # Load configuration parameters
-        params = load_params(params_path='params.yaml')
+        # params = load_params(params_path='params.yaml')
 
         # Load the trained model
         clf = load_model('./models/model.pkl')
@@ -195,12 +195,17 @@ def main():
         # Evaluate model
         metrics = evaluate_model(clf, X_test, y_test)
 
-        # # Use dvclive for experiment tracking
+
+
+        # Use dvclive for experiment tracking
         # with Live(save_dvc_exp=True) as live:
         #     for metric_name, value in metrics.items():
         #         live.log_metric(metric_name, value)  # Log each metric correctly
 
         #     live.log_params(params)  # Logs all params for reproducibility
+
+
+
 
         # Save metrics to reports/
         save_metrics(metrics, 'reports/metrics.json')

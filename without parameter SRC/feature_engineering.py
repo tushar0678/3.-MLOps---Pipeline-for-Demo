@@ -42,50 +42,8 @@ logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
 
-def load_params(params_path: str) -> dict:
-    """
-    Load parameters from a YAML config file.
-
-    Args:
-        params_path (str): Path to the YAML file.
-
-    Returns:
-        dict: Dictionary of parameters.
-
-    Raises:
-        FileNotFoundError: If the YAML file is missing.
-        yaml.YAMLError: For invalid YAML syntax.
-    """
-    try:
-        with open(params_path, 'r') as file:
-            params = yaml.safe_load(file)
-        logger.debug('Parameters retrieved from %s', params_path)
-        return params
-    except FileNotFoundError:
-        logger.error('File not found: %s', params_path)
-        raise
-    except yaml.YAMLError as e:
-        logger.error('YAML error: %s', e)
-        raise
-    except Exception as e:
-        logger.error('Unexpected error: %s', e)
-        raise
-
-
 def load_data(file_path: str) -> pd.DataFrame:
-    """
-    Load dataset from a CSV file.
 
-    Args:
-        file_path (str): Path to the CSV file.
-
-    Returns:
-        pd.DataFrame: Loaded dataset.
-
-    Raises:
-        pd.errors.ParserError: If file is unreadable.
-        Exception: For unexpected issues.
-    """
     try:
         df = pd.read_csv(file_path)
         df.fillna('', inplace=True)  # Fill missing text values with empty string
@@ -173,8 +131,7 @@ def main():
     """
     try:
         # Load parameters from params.yaml
-        params = load_params(params_path='params.yaml')
-        max_features = params['feature_engineering']['max_features']
+        max_features = 40
 
         # Load preprocessed data
         train_data = load_data('./data/interim/train_processed.csv')
